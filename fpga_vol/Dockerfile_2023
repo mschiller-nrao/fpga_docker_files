@@ -1,6 +1,9 @@
 FROM ubuntu:22.04
+# The point of this is to use a combined docker that can run tools off /tool volume share
 
 ARG DOCKER_USER=ci
+ARG DOCKER_USER_UID=1000 #deliberately chosen to allign with gitlab-runner UID which should make file permissions easier
+ARG DOCKER_USER_GID=1000 #deliberately chosen to allign with gitlab-runner UID which should make file permissions easier
 
 
 ENV XLNX_INSTALL_LOCATION=/tools/Xilinx
@@ -74,8 +77,8 @@ ENV LC_ALL en_US.UTF-8
 # sudo command by ammending sudoers file
 RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
-RUN useradd -m $DOCKER_USER
-RUN usermod -a -G sudo ci
+RUN useradd -m -u $DOCKER_USER_UID -g $DOCKER_USER_GID $DOCKER_USER
+RUN usermod -a -G sudo $DOCKER_USER
 USER $DOCKER_USER
 ENV LD_PRELOAD=/usr/lib/libtcmalloc_minimal.so.4
 
