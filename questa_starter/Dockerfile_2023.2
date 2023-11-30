@@ -1,0 +1,49 @@
+FROM almalinux:9
+RUN dnf update -y
+RUN dnf install -y \
+        gcc \
+        python3 \
+        libnsl \
+        glibc-all-langpacks \
+        unzip \
+        wget \
+	    unzip \
+        net-tools \
+        git \
+        python3 \
+        python3-pip \
+	    libX11 \
+        libXext \
+        libXft \
+        libSM \
+    && dnf clean all
+RUN python3 -m pip install pytest --progress-bar off
+RUN python3 -m pip install numpy --progress-bar off
+#RUN python3 -m pip install vunit-hdl --progress-bar off
+RUN git clone --recurse-submodules https://github.com/VUnit/vunit.git
+RUN cd vunit && \
+    python3 setup.py install
+
+COPY quartus_fse.dat /opt
+
+#RUN localectl set-locale LANG=en_US.UTF-8
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US:en
+ENV LC_ALL en_US.UTF-8
+
+RUN cd /tmp && \
+    wget https://downloads.intel.com/akdlm/software/acdsinst/23.3/104/qinst/qinst-linux-23.3-104.zip && \
+    unzip qinst-linux-23.3-104.zip && \
+    cd qinst_linux && \
+    mkdir /opt/quartus && \
+    ./qinst.sh --cli --accept-eula --auto-install --parallel-downloads=4 --platform=linux --components=questa_fse --download-dir /tmp/download --install-dir /opt/quartus && \
+    rm -rf /tmp/download && \
+    cd /opt && \
+    rm -rf /tmp/qinst_linux
+
+ENV PATH="/opt/quartus/questa_fse/bin:${PATH}"
+
+ENV LM_LICENSE_FILE=/opt/quartus_fse.dat
+COPY start_questa.sh /opt
+ENTRYPOINT ["/opt/start_questa.sh"]
+

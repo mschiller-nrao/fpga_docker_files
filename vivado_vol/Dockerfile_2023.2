@@ -1,0 +1,79 @@
+FROM ubuntu:22.04
+
+ARG DOCKER_USER=ci
+
+
+ENV XLNX_INSTALL_LOCATION=/tools/Xilinx
+ENV DEBIAN_FRONTEND=noninteractive  
+RUN apt-get update
+RUN dpkg --add-architecture i386 
+RUN apt-get update 
+RUN apt-get upgrade -y
+# petalinux base dependencies
+RUN apt-get install -y \
+		tofrodos \
+		iproute2 \
+		gawk \
+		xvfb \
+		git \
+		make \
+		net-tools \
+		libncurses5-dev \
+		update-inetd \
+		tftpd \
+		zlib1g-dev:i386 \
+		libssl-dev \
+		flex \
+		bison \
+		libselinux1 \
+		gnupg \
+		wget \
+		diffstat \
+		chrpath \
+		socat \
+		xterm \
+		autoconf \
+		libtool \
+		libtool-bin \
+		libtinfo5 \
+		sudo \
+		tar \
+		unzip \
+		texinfo \
+		zlib1g-dev \
+		gcc-multilib \
+		build-essential \
+		libsdl1.2-dev \
+		libglib2.0-dev \
+		screen \
+		pax \
+		gzip \
+		python3-gi \
+		less \
+		lsb-release \
+		fakeroot \
+		libgtk2.0-0 \
+		libgtk2.0-dev \
+		cpio \
+		rsync \
+		xorg \
+		expect \
+		dos2unix \
+		google-perftools \
+		default-jre \
+		locales \
+         && apt-get clean
+RUN locale-gen en_US.UTF-8 
+ENV LANG en_US.UTF-8  
+ENV LANGUAGE en_US:en  
+ENV LC_ALL en_US.UTF-8 
+
+RUN useradd -m $DOCKER_USER
+USER $DOCKER_USER
+
+# The user will need to volume mount tools at /tools
+# tools should have this structure to the settings64.sh
+# /tools/Xilinx/Vivado/2023.2/settings64.sh
+COPY start_vivado.sh /opt
+ENTRYPOINT ["/opt/start_vivado.sh"]
+

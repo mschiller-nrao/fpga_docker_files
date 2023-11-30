@@ -1,0 +1,36 @@
+FROM almalinux:8
+RUN dnf update -y
+RUN dnf install -y \
+        gcc \
+        git \
+        glibc-all-langpacks \
+        python39 \
+	    libX11 \
+        libXext \
+        libXft \
+        libSM \
+    && dnf clean all
+RUN python3 -m pip install pytest --progress-bar off
+RUN python3 -m pip install numpy --progress-bar off
+#RUN python3 -m pip install vunit-hdl --progress-bar off
+RUN git clone --recurse-submodules https://github.com/VUnit/vunit.git
+RUN cd vunit && \
+    python3 setup.py install
+
+COPY batchInstall_2023.3.sh /opt/batchInstall.sh
+COPY questa_sim-2023.3_2.aol /opt
+
+ENV LANG en_US.UTF-8  
+ENV LANGUAGE en_US:en  
+ENV LC_ALL en_US.UTF-8   
+  
+RUN mkdir -p /usr/tmp && \
+    sh /opt/batchInstall.sh && \
+    rm /opt/questa_sim-2023.3_2.aol && \
+    rm /opt/batchInstall.sh
+ 
+ENV PATH="/opt/questa/2023.3/questasim/bin:${PATH}"
+
+# Note you need to set LM_LICENSE_FILE to your build server in your user scripting!  
+#ENV LM_LICENSE_FILE=2100@cv-flexserverB.ad.nrao.edu:1717@cv-flexserverB.ad.nrao.edu
+#This does not set it for you
