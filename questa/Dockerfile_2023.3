@@ -1,10 +1,17 @@
-FROM almalinux:8
+FROM almalinux:9
 RUN dnf update -y
 RUN dnf install -y \
         gcc \
-        git \
+        python3 \
+        libnsl \
         glibc-all-langpacks \
-        python39 \
+        unzip \
+        wget \
+	    unzip \
+        net-tools \
+        git \
+        python3 \
+        python3-pip \
 	    libX11 \
         libXext \
         libXft \
