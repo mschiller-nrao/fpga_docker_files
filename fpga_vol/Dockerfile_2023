@@ -1,4 +1,4 @@
-FROM ubuntu:22.04
+FROM gcr.io/hdl-containers/sim/scipy:latest
 
 ARG DOCKER_USER=ci
 ARG DOCKER_USER_UID=1000 #deliberately chosen to allign with gitlab-runner UID which should make file permissions easier
@@ -21,7 +21,6 @@ RUN apt-get update\
 		net-tools \
 		libncurses5-dev \
 		update-inetd \
-		tftpd \
 		zlib1g-dev:i386 \
 		libssl-dev \
 		flex \
@@ -38,6 +37,7 @@ RUN apt-get update\
 		libtool-bin \
 		libtinfo5 \
 		sudo \
+                python3-full \
 		tar \
 		unzip \
 		texinfo \
@@ -46,7 +46,6 @@ RUN apt-get update\
 		build-essential \
 		libsdl1.2-dev \
 		libglib2.0-dev \
-		python3.11-full \
 		dialog \
 		screen \
 		pax \
@@ -66,7 +65,10 @@ RUN apt-get update\
 		default-jre \
 		locales \
     && apt-get clean
-RUN locale-gen en_US.UTF-8
+RUN pip3 install scipy
+RUN pip3 install tk
+COPY locale.gen /etc/locale.gen
+RUN /usr/sbin/locale-gen
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8

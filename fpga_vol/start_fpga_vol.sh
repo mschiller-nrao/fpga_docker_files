@@ -9,7 +9,7 @@ if [ -d /mnt/home/.ssh ]; then
   fi
 else
   # if we are running non-interactively, assume "normal" network too, so change the ether address for licenses
-  sudo ifconfig eth0 hw ether 00155D0F15B4
+  sudo ifconfig eth0 hw ether $ETH_ADDRESS_TO_SET
   cd /home/ci
 fi
 
