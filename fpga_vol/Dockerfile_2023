@@ -1,25 +1,23 @@
 FROM ubuntu:22.04
-# The point of this is to use a combined docker that can run tools off /tool volume share
 
 ARG DOCKER_USER=ci
 ARG DOCKER_USER_UID=1000 #deliberately chosen to allign with gitlab-runner UID which should make file permissions easier
 ARG DOCKER_USER_GID=1000 #deliberately chosen to allign with gitlab-runner UID which should make file permissions easier
 
-
 ENV XLNX_INSTALL_LOCATION=/tools/Xilinx
-ENV DEBIAN_FRONTEND=noninteractive  
-RUN apt-get update
-RUN dpkg --add-architecture i386 
-RUN apt-get update 
-RUN apt-get upgrade -y
-# petalinux base dependencies
-RUN apt-get install -y \
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update\
+    && dpkg --add-architecture i386\
+    && apt-get update \
+    && apt-get upgrade -y \
+    && apt-get install -y \
 		tofrodos \
 		iproute2 \
 		gawk \
 		xvfb \
 		git \
 		make \
+                nano \
 		net-tools \
 		libncurses5-dev \
 		update-inetd \
@@ -41,7 +39,6 @@ RUN apt-get install -y \
 		libtinfo5 \
 		sudo \
 		tar \
-		libtcmalloc-minimal4 \
 		unzip \
 		texinfo \
 		zlib1g-dev \
@@ -49,6 +46,8 @@ RUN apt-get install -y \
 		build-essential \
 		libsdl1.2-dev \
 		libglib2.0-dev \
+		python3.11-full \
+		dialog \
 		screen \
 		pax \
 		gzip \
@@ -66,25 +65,21 @@ RUN apt-get install -y \
 		google-perftools \
 		default-jre \
 		locales \
-         && apt-get clean
+    && apt-get clean
 RUN locale-gen en_US.UTF-8
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 
-# Ensure sudo group users are not
-# asked for a password when using
-# sudo command by ammending sudoers file
-RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
-
-RUN useradd -m -u $DOCKER_USER_UID -g $DOCKER_USER_GID $DOCKER_USER
-RUN usermod -a -G sudo $DOCKER_USER
+RUN useradd -m -G sudo $DOCKER_USER
+RUN echo "%sudo  ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 USER $DOCKER_USER
-ENV LD_PRELOAD=/usr/lib/libtcmalloc_minimal.so.4
+ENV LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libtcmalloc_minimal.so.4
+COPY bash_aliases.sh /home/ci/.bash_aliases
 
 # The user will need to volume mount tools at /tools
 # tools should have this structure to the settings64.sh
 # /tools/Xilinx/Vivado/2023.2/settings64.sh
-COPY start_vivado.sh /opt
-ENTRYPOINT ["/opt/start_vivado.sh"]
+COPY start_fpga_vol.sh /opt
+ENTRYPOINT ["/opt/start_fpga_vol.sh"]
 
