@@ -20,4 +20,4 @@ services:
     environment:
       RAM_SIZE: "8G"
       CPU_CORES: "4"
-      ARGUMENTS: "-device usb-host,vendorid=0x0403,productid=0x6011 -device usb-host,vendorid=0x20ce,productid=0x0023 -device usb-host,vendorid=0x20ce,productid=0x0022"
+      ARGUMENTS: "-device usb-host,hostbus=1,hostaddr=16 -device usb-host,hostbus=1,hostaddr=7 -device usb-host,hostbus=1,hostaddr=14 -device usb-host,hostbus=1,hostaddr=13 -device usb-host,hostbus=1,hostaddr=9"
