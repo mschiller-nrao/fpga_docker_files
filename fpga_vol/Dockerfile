@@ -66,8 +66,14 @@ RUN apt-get update\
 		default-jre \
 		locales \
     && apt-get clean
+RUN pip3 uninstall -y vunit-hdl
 RUN pip3 install scipy
 RUN pip3 install tk
+RUN pip3 install wheel
+RUN git clone https://github.com/mschiller-nrao/vcst.git\ 
+    && cd vcst \
+    && pip3 install .
+RUN pip3 install cocotbext-axi
 COPY locale.gen /etc/locale.gen
 RUN /usr/sbin/locale-gen
 ENV LANG en_US.UTF-8
