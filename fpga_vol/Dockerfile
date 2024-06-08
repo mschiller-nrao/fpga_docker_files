@@ -64,6 +64,7 @@ RUN apt-get update\
 		dos2unix \
 		google-perftools \
 		default-jre \
+                libxext6 \
 		locales \
     && apt-get clean
 RUN pip3 uninstall -y vunit-hdl
@@ -83,7 +84,7 @@ ENV LC_ALL en_US.UTF-8
 RUN useradd -m -G sudo $DOCKER_USER
 RUN echo "%sudo  ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 USER $DOCKER_USER
-ENV LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libtcmalloc_minimal.so.4:/usr/lib/x86_64-linux-gnu/libudev.so.1
+#ENV LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libtcmalloc_minimal.so.4:/usr/lib/x86_64-linux-gnu/libudev.so.1
 COPY bash_aliases.sh /home/ci/.bash_aliases
 
 # The user will need to volume mount tools at /tools
