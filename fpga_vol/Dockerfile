@@ -64,7 +64,11 @@ RUN apt-get update\
 		dos2unix \
 		google-perftools \
 		default-jre \
-                libxext6 \
+                libxft2 \
+                libxft2:i386 \ 
+                lib32ncurses6 \
+                libxtst6:i386 \
+                libxtst6 \
 		locales \
     && apt-get clean
 RUN pip3 uninstall -y vunit-hdl
