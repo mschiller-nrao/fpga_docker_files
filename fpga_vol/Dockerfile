@@ -57,6 +57,7 @@ RUN apt-get update\
 		fakeroot \
 		libgtk2.0-0 \
 		libgtk2.0-dev \
+		openssh-client \
 		cpio \
 		rsync \
 		xorg \
