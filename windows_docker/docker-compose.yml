@@ -1,4 +1,4 @@
-version: "3"
+#version: "3"
 services:
   windows:
     # based on dockurr/windows
@@ -20,4 +20,4 @@ services:
     environment:
       RAM_SIZE: "8G"
       CPU_CORES: "4"
-      ARGUMENTS: "-device usb-host,hostbus=1,hostaddr=16 -device usb-host,hostbus=1,hostaddr=7 -device usb-host,hostbus=1,hostaddr=14 -device usb-host,hostbus=1,hostaddr=13 -device usb-host,hostbus=1,hostaddr=9"
+      ARGUMENTS: "-device usb-host,hostbus=1,hostaddr=20 -device usb-host,hostbus=1,hostaddr=19 -device usb-host,hostbus=1,hostaddr=10 -device usb-host,hostbus=1,hostaddr=22 -device usb-host,hostbus=1,hostaddr=7"

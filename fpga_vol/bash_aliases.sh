@@ -15,7 +15,7 @@ shopt -s expand_aliases
 #else
 #  echo "No Vivado 2023 found"	
 #fi
-
+source /pyvenv/bin/activate
 if [ -f /tools/quartus/2023.4/quartus/bin/quartus ]; then
   alias squartus="LD_PRELOAD=/lib/x86_64-linux-gnu/libudev.so.1 /tools/quartus/2023.4/quartus/bin/quartus"
   alias squartus_sh="LD_PRELOAD=/lib/x86_64-linux-gnu/libudev.so.1 /tools/quartus/2023.4/quartus/bin/quartus_sh"

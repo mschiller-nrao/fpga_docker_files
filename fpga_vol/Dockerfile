@@ -1,4 +1,4 @@
-FROM gcr.io/hdl-containers/sim/scipy:latest
+FROM python:3.13-bookworm
 
 ARG DOCKER_USER=ci
 ARG DOCKER_USER_UID=1000 #deliberately chosen to allign with gitlab-runner UID which should make file permissions easier
@@ -38,7 +38,6 @@ RUN apt-get update\
 		libtool-bin \
 		libtinfo5 \
 		sudo \
-                python3-full \
 		tar \
 		unzip \
 		texinfo \
@@ -51,7 +50,6 @@ RUN apt-get update\
 		screen \
 		pax \
 		gzip \
-		python3-gi \
 		less \
 		lsb-release \
 		fakeroot \
@@ -60,7 +58,6 @@ RUN apt-get update\
 		openssh-client \
 		cpio \
 		rsync \
-		xorg \
 		expect \
 		dos2unix \
 		google-perftools \
@@ -72,10 +69,18 @@ RUN apt-get update\
                 libxtst6 \
 		locales \
     && apt-get clean
-RUN pip3 uninstall -y vunit-hdl
+#RUN pip3 uninstall -y vunit-hdl
+RUN /usr/local/bin/python3 -m venv /pyvenv
+SHELL ["/bin/bash", "-c"]
+#RUN ls -l /
+#RUN ls -l /pyvenv
+#RUN source /pyvenv/bin/activate
+ENV VIRTUAL_ENV /pyvenv
+ENV PATH /pyvenv/bin:$PATH
 RUN pip3 install scipy
 RUN pip3 install tk
 RUN pip3 install wheel
+RUN pip install --upgrade pip
 RUN git clone https://github.com/mschiller-nrao/vcst.git\ 
     && cd vcst \
     && pip3 install .
@@ -88,6 +93,7 @@ ENV LC_ALL en_US.UTF-8
 
 RUN useradd -m -G sudo $DOCKER_USER
 RUN echo "%sudo  ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+RUN chown -R $DOCKER_USER /pyvenv
 USER $DOCKER_USER
 #ENV LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libtcmalloc_minimal.so.4:/usr/lib/x86_64-linux-gnu/libudev.so.1
 COPY bash_aliases.sh /home/ci/.bash_aliases
