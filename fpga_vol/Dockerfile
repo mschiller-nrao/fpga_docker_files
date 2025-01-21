@@ -85,6 +85,7 @@ RUN git clone https://github.com/mschiller-nrao/vcst.git\
     && cd vcst \
     && pip3 install .
 RUN pip3 install cocotbext-axi
+RUN pip3 install casper_r2sdf_fft
 COPY locale.gen /etc/locale.gen
 RUN /usr/sbin/locale-gen
 ENV LANG en_US.UTF-8
